@@ -1,0 +1,40 @@
+{
+    "name": "scabbiafw/scabbia2-yaml",
+    "description": "Scabbia2 Yaml Component",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "larukedi",
+        "scabbia",
+        "scabbia2",
+        "scabbiafw",
+        "yaml"
+    ],
+    "homepage": "http://www.scabbiafw.com/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Scabbia Framework Organization",
+            "email": "contact@scabbiafw.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "require-dev": {
+        "scabbiafw/scabbia2-testing": "dev-master"
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Scabbia\\Yaml\\": [ "src/Yaml/" ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Scabbia\\Tests\\Yaml\\": [ "tests/Yaml/" ]
+        }
+    }
+}
