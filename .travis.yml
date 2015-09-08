@@ -8,6 +8,7 @@ php:
 before_install:
   - pyrus install pear/PHP_CodeSniffer-2.1.0
   - phpenv rehash
+  - composer self-update
   - composer install
 
 script:
