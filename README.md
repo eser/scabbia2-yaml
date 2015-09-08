@@ -5,10 +5,9 @@
 [This repository](https://github.com/scabbiafw/scabbia2-yaml/) contains the files of Scabbia2 Yaml Component which is probably required for Scabbia2 Framework to run.
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-yaml.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-yaml)
-[![HHVM Status](http://hhvm.h4cc.de/badge/scabbiafw/scabbia2-yaml.svg)](http://hhvm.h4cc.de/package/scabbiafw/scabbia2-yaml)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-yaml/badges/quality-score.png?s=ea455753b50c686880c35dce99fd5058a28da810)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-yaml/)
-[![Code consistency](http://squizlabs.github.io/PHP_CodeSniffer/analysis/scabbiafw/scabbia2-yaml/grade.svg)](http://squizlabs.github.io/PHP_CodeSniffer/analysis/scabbiafw/scabbia2-yaml)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-yaml/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
+[![Latest Stable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/stable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
+[![Latest Unstable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/unstable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![License](https://poser.pugx.org/scabbiafw/scabbia2-yaml/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 
 ## Links
