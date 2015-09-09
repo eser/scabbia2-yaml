@@ -23,6 +23,7 @@
         "php": ">=5.6.0"
     },
     "require-dev": {
+        "scabbiafw/scabbia2-tasks": "*",
         "scabbiafw/scabbia2-testing": "*"
     },
     "suggest": {
