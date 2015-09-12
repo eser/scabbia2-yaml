@@ -4,21 +4,44 @@
     "type": "library",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "preferred-install": "dist"
+    },
     "keywords": [
         "larukedi",
         "scabbia",
         "scabbia2",
         "scabbiafw",
-        "yaml"
+        "yaml",
+        "parser"
     ],
     "homepage": "http://www.scabbiafw.com/",
-    "license": "Apache-2.0",
+    "license": [
+        "Apache-2.0",
+        "MIT"
+    ],
     "authors": [
         {
             "name": "Scabbia Framework Organization",
-            "email": "contact@scabbiafw.com"
+            "homepage": "http://scabbiafw.com/"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/scabbiafw/scabbia2-yaml/blob/master/contributors.md"
+        },
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
         }
     ],
+    "support": {
+        "issues": "https://github.com/scabbiafw/scabbia2-yaml/issues",
+        "source": "https://github.com/scabbiafw/scabbia2-yaml"
+    },
     "require": {
         "php": ">=5.6.0"
     },
