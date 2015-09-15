@@ -1,8 +1,6 @@
 # Scabbia2 Yaml Component
 
-**Scabbia2** is an open source PHP framework project which is currently on planning stage. Keep visiting [project homepage](http://scabbiafw.com/) and [repositories](https://github.com/scabbiafw/) for further updates.
-
-[This repository](https://github.com/scabbiafw/scabbia2-yaml/) contains the files of Scabbia2 Yaml Component which is probably required for Scabbia2 Framework to run.
+[This component](https://github.com/scabbiafw/scabbia2-yaml/) is a YAML parser allows serialization and deserialization in YAML format.
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-yaml.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-yaml)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-yaml/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
