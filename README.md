@@ -6,10 +6,11 @@
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-yaml/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![Latest Stable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/stable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![Latest Unstable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/unstable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
+[![Documentation Status](https://readthedocs.org/projects/scabbia2-documentation/badge/?version=latest)](http://docs.scabbiafw.com/)
 [![License](https://poser.pugx.org/scabbiafw/scabbia2-yaml/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 
 ## Links
-- [Documentation](http://scabbiafw.com/docs/)
+- [Documentation](http://docs.scabbiafw.com/)
 - [Twitter](https://twitter.com/scabbiafw)
 - [Contributor List](contributors.md)
 - License Information [I](LICENSE-Apache) [II](LICENSE-MIT)
