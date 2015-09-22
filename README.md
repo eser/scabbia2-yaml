@@ -3,11 +3,11 @@
 [This component](https://github.com/scabbiafw/scabbia2-yaml/) is a YAML parser allows serialization and deserialization in YAML format.
 
 [![Build Status](https://travis-ci.org/scabbiafw/scabbia2-yaml.png?branch=master)](https://travis-ci.org/scabbiafw/scabbia2-yaml)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-yaml/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scabbiafw/scabbia2-yaml/?branch=master)
 [![Total Downloads](https://poser.pugx.org/scabbiafw/scabbia2-yaml/downloads.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![Latest Stable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/stable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![Latest Unstable Version](https://poser.pugx.org/scabbiafw/scabbia2-yaml/v/unstable)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 [![Documentation Status](https://readthedocs.org/projects/scabbia2-documentation/badge/?version=latest)](http://docs.scabbiafw.com/)
-[![License](https://poser.pugx.org/scabbiafw/scabbia2-yaml/license.png)](https://packagist.org/packages/scabbiafw/scabbia2-yaml)
 
 ## Links
 - [Documentation](http://docs.scabbiafw.com/)
