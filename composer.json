@@ -1,5 +1,5 @@
 {
-    "name": "scabbiafw/scabbia2-yaml",
+    "name": "eserozvataf/scabbia2-yaml",
     "description": "Scabbia2 Yaml Component",
     "type": "library",
     "minimum-stability": "dev",
@@ -8,26 +8,26 @@
         "preferred-install": "dist"
     },
     "keywords": [
-        "larukedi",
+        "eserozvataf",
         "scabbia",
         "scabbia2",
         "scabbiafw",
         "yaml",
         "parser"
     ],
-    "homepage": "http://www.scabbiafw.com/",
+    "homepage": "https://github.com/eserozvataf/scabbia2",
     "license": [
         "Apache-2.0",
         "MIT"
     ],
     "authors": [
         {
-            "name": "Scabbia Framework Organization",
-            "homepage": "http://scabbiafw.com/"
+            "name": "Eser Ozvataf",
+            "homepage": "http://eser.ozvataf.com/"
         },
         {
             "name": "Contributors",
-            "homepage": "https://github.com/scabbiafw/scabbia2-yaml/blob/master/contributors.md"
+            "homepage": "https://github.com/eserozvataf/scabbia2-yaml/blob/master/contributors.md"
         },
         {
             "name": "Fabien Potencier",
@@ -39,15 +39,15 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/scabbiafw/scabbia2-yaml/issues",
-        "source": "https://github.com/scabbiafw/scabbia2-yaml"
+        "issues": "https://github.com/eserozvataf/scabbia2-yaml/issues",
+        "source": "https://github.com/eserozvataf/scabbia2-yaml"
     },
     "require": {
         "php": ">=5.6.0"
     },
     "require-dev": {
-        "scabbiafw/scabbia2-tasks": "*",
-        "scabbiafw/scabbia2-testing": "*",
+        "eserozvataf/scabbia2-tasks": "*",
+        "eserozvataf/scabbia2-testing": "*",
         "squizlabs/php_codesniffer": "2.*"
     },
     "suggest": {
