@@ -9,6 +9,38 @@
 [![Latest Unstable Version](https://poser.pugx.org/eserozvataf/scabbia2-yaml/v/unstable)](https://packagist.org/packages/eserozvataf/scabbia2-yaml)
 [![Documentation Status](https://readthedocs.org/projects/scabbia2-documentation/badge/?version=latest)](https://readthedocs.org/projects/scabbia2-documentation)
 
+## Usage
+
+### Parsing a YAML file
+
+```php
+use Scabbia\Yaml\Parser;
+
+$file = file_get_contents('myConfig.yml');
+
+$parser = new Parser();
+$config = $parser->parse($file);
+
+var_dump($config);
+```
+
+### Writing a YAML file
+
+```php
+use Scabbia\Yaml\Dumper;
+
+$config = [
+    'type' => 'mongo',
+    'username' => 'eserozvataf',
+    'password' => 'password'
+];
+
+$dumper = new Dumper();
+$content = $dumper->dump($config);
+
+file_put_contents('myConfig.yml', $content);
+```
+
 ## Links
 - [List of All Scabbia2 Components](https://github.com/eserozvataf/scabbia2)
 - [Documentation](https://readthedocs.org/projects/scabbia2-documentation)
