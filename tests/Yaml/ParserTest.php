@@ -138,7 +138,7 @@ class ParserTest extends UnitTestFixture
      */
     public function testEndOfTheDocumentMarker()
     {
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 --- %YAML:1.0
 foo
 ...
@@ -170,6 +170,14 @@ EOF;
             "bar" => "one\ntwo",
         ];
         $tests["Literal block chomping strip with single trailing newline"] = [$expected, $yaml];
+
+        $yaml = <<<'EOF'
+{}
+
+
+EOF;
+        $expected = [];
+        $tests["Literal block chomping strip with multiple trailing newlines after a 1-liner"] = [$expected, $yaml];
 
         $yaml = <<<'EOF'
 foo: |-
@@ -466,7 +474,7 @@ EOF;
      */
     public function testObjectSupport()
     {
-        $input = <<<EOF
+        $input = <<<'EOF'
 foo: !!php/object:O:29:"Scabbia\Tests\Yaml\DummyClass":1:{s:1:"b";s:3:"foo";}
 bar: 1
 EOF;
@@ -486,12 +494,32 @@ EOF;
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 
 collection:
 -item1
 -item2
 -item3
+
+EOF;
+
+        $this->parser->parse($yaml);
+    }
+
+    /**
+     * Tests shortcut key unindented collection exceptions
+     *
+     * @return void
+     */
+    public function testShortcutKeyUnindentedCollectionException()
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        $yaml = <<<'EOF'
+
+collection:
+-  key: foo
+  foo: bar
 
 EOF;
 
@@ -507,7 +535,7 @@ EOF;
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 # Ranking of 1998 home runs
 ---
 - Mark McGwire
@@ -532,7 +560,7 @@ EOF;
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 yaml:
   hash: me
   - array stuff
@@ -550,10 +578,29 @@ EOF;
     {
         $this->expectException("Scabbia\\Yaml\\ParseException");
 
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 yaml:
   - array stuff
   hash: me
+EOF;
+
+        $this->parser->parse($yaml);
+    }
+
+    /**
+     * Tests scalar in a sequence
+     *
+     * @return void
+     */
+    public function testScalarInASequence()
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        $yaml = <<<'EOF'
+foo:
+    - bar
+"missing colon"
+    foo: bar
 EOF;
 
         $this->parser->parse($yaml);
@@ -566,11 +613,41 @@ EOF;
      */
     public function testEmptyValue()
     {
-        $input = <<<EOF
+        $input = <<<'EOF'
 hash:
 EOF;
 
         $this->assertEquals(["hash" => null], $this->parser->parse($input));
+    }
+
+    public function testCommentAtTheRootIndent()
+    {
+        $yaml = <<<'EOF'
+# comment 1
+services:
+# comment 2
+    # comment 3
+    app.foo_service:
+        class: Foo
+# comment 4
+    # comment 5
+    app/bar_service:
+        class: Bar
+EOF;
+
+        $this->assertEquals(
+            [
+                "services" => [
+                    "app.foo_service" => [
+                        "class" => "Foo",
+                    ],
+                    "app/bar_service" => [
+                        "class" => "Bar",
+                    ],
+                ],
+            ],
+            $this->parser->parse($yaml)
+        );
     }
 
     /**
@@ -580,7 +657,7 @@ EOF;
      */
     public function testStringBlockWithComments()
     {
-        $yaml1 = <<<EOF
+        $yaml1 = <<<'EOF'
 # comment 1
 header
 
@@ -592,7 +669,7 @@ header
 footer # comment3
 EOF;
 
-        $yaml2 = <<<EOF
+        $yaml2 = <<<'EOF'
 content: |
     # comment 1
     header
@@ -615,7 +692,7 @@ EOF;
      */
     public function testFoldedStringBlockWithComments()
     {
-        $yaml1 = <<<EOF
+        $yaml1 = <<<'EOF'
 # comment 1
 header
 
@@ -627,7 +704,7 @@ header
 footer # comment3
 EOF;
 
-        $yaml2 = <<<EOF
+        $yaml2 = <<<'EOF'
 -
     content: |
         # comment 1
@@ -646,7 +723,7 @@ EOF;
 
     public function testNestedFoldedStringBlockWithComments()
     {
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 -
     title: some title
     content: |
@@ -664,7 +741,7 @@ EOF;
         $this->assertEquals(
             [[
                 "title"   => "some title",
-                "content" => <<<EOF
+                "content" => <<<'EOF'
 # comment 1
 header
 
@@ -682,7 +759,7 @@ EOF
 
     public function testReferenceResolvingInInlineStrings()
     {
-        $yaml = <<<EOF
+        $yaml = <<<'EOF'
 var:  &var var-value
 scalar: *var
 list: [ *var ]
@@ -705,6 +782,234 @@ EOF;
                 "map" => ["key" => "var-value"],
                 "list_in_map" => ["key" => ["var-value"]],
                 "map_in_map" => ["foo" => ["bar" => "var-value"]],
+            ],
+            $this->parser->parse($yaml)
+        );
+    }
+
+    public function testYamlDirective()
+    {
+        $yaml = <<<'EOF'
+%YAML 1.2
+---
+foo: 1
+bar: 2
+EOF;
+        $this->assertEquals(["foo" => 1, "bar" => 2], $this->parser->parse($yaml));
+    }
+
+    public function testFloatKeys()
+    {
+        $yaml = <<<'EOF'
+foo:
+    1.2: "bar"
+    1.3: "baz"
+EOF;
+
+        $expected = [
+            "foo" => [
+                "1.2" => "bar",
+                "1.3" => "baz",
+            ),
+        );
+
+        $this->assertEquals($expected, $this->parser->parse($yaml));
+    }
+
+    public function testColonInMappingValueException()
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        $yaml = <<<'EOF'
+foo: bar: baz
+EOF;
+
+        $this->parser->parse($yaml);
+    }
+
+    public function testColonInMappingValueExceptionNotTriggeredByColonInComment()
+    {
+        $yaml = <<<'EOF'
+foo:
+    bar: foobar # Note: a comment after a colon
+EOF;
+
+        $this->assertSame(["foo" => ["bar" => "foobar"]], $this->parser->parse($yaml));
+    }
+
+    public function testCommentLikeStringsAreNotStrippedInBlockScalars()
+    {
+        $tests = [];
+
+        $yaml = <<<'EOF'
+pages:
+    -
+        title: some title
+        content: |
+            # comment 1
+            header
+
+                # comment 2
+                <body>
+                    <h1>title</h1>
+                </body>
+
+            footer # comment3
+EOF;
+        $expected = [
+            "pages" => [
+                [
+                    "title" => "some title",
+                    "content" => <<<'EOF'
+# comment 1
+header
+
+    # comment 2
+    <body>
+        <h1>title</h1>
+    </body>
+
+footer # comment3
+EOF
+                    ,
+                ],
+            ],
+        ];
+        $tests[] = [$yaml, $expected];
+
+        $yaml = <<<'EOF'
+test: |
+    foo
+    # bar
+    baz
+collection:
+    - one: |
+        foo
+        # bar
+        baz
+    - two: |
+        foo
+        # bar
+        baz
+EOF;
+        $expected = [
+            "test" => <<<'EOF'
+foo
+# bar
+baz
+
+EOF
+            ,
+            "collection" => [
+                [
+                    "one" => <<<'EOF'
+foo
+# bar
+baz
+EOF
+                    ,
+                ],
+                [
+                    "two" => <<<'EOF'
+foo
+# bar
+baz
+EOF
+                    ,
+                ],
+            ],
+        ];
+        $tests[] = [$yaml, $expected];
+
+        $yaml = <<<'EOF'
+foo:
+  bar:
+    scalar-block: >
+      line1
+      line2>
+  baz:
+# comment
+    foobar: ~
+EOF;
+        $expected = [
+            "foo" => [
+                "bar" => [
+                    "scalar-block" => "line1 line2>",
+                ],
+                "baz" => [
+                    "foobar" => null,
+                ],
+            ],
+        ];
+        $tests[] = [$yaml, $expected];
+
+        $yaml = <<<'EOF'
+a:
+    b: hello
+#    c: |
+#        first row
+#        second row
+    d: hello
+EOF;
+        $expected = [
+            "a" => [
+                "b" => "hello",
+                "d" => "hello",
+            ],
+        ];
+        $tests[] = [$yaml, $expected];
+
+        foreach ($tests as $yaml => $expected) {
+            $this->assertSame($expectedParserResult, $this->parser->parse($yaml));
+        }
+    }
+
+    public function testBlankLinesAreParsedAsNewLinesInFoldedBlocks()
+    {
+        $yaml = <<<'EOF'
+test: >
+    <h2>A heading</h2>
+
+    <ul>
+    <li>a list</li>
+    <li>may be a good example</li>
+    </ul>
+EOF;
+
+        $this->assertSame(
+            [
+                "test" => <<<'EOF'
+<h2>A heading</h2>
+<ul> <li>a list</li> <li>may be a good example</li> </ul>
+EOF
+                ,
+            ],
+            $this->parser->parse($yaml)
+        );
+    }
+
+    public function testAdditionallyIndentedLinesAreParsedAsNewLinesInFoldedBlocks()
+    {
+        $yaml = <<<'EOF'
+test: >
+    <h2>A heading</h2>
+
+    <ul>
+      <li>a list</li>
+      <li>may be a good example</li>
+    </ul>
+EOF;
+
+        $this->assertSame(
+            [
+                "test" => <<<'EOF'
+<h2>A heading</h2>
+<ul>
+  <li>a list</li>
+  <li>may be a good example</li>
+</ul>
+EOF
+                ,
             ],
             $this->parser->parse($yaml)
         );

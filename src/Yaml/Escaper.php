@@ -37,6 +37,8 @@ namespace Scabbia\Yaml;
  * @author      Matthew Lewinski <matthew@lewinski.org>
  * @author      Eser Ozvataf <eser@ozvataf.com>
  * @since       2.0.0
+ *
+ * @internal
  */
 class Escaper
 {
@@ -44,7 +46,7 @@ class Escaper
     const REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
     /** @type string REGEX_ESCAPED_CHARACTER Regex fragment that matches an escaped char in a double quoted string */
     const REGEX_ESCAPED_CHARACTER =
-        "\\\\([0abt\tnvfre \\\"\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})";
+        "\\\\(x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}|.)";
 
 
     /**
@@ -104,6 +106,14 @@ class Escaper
      */
     public static function requiresSingleQuoting($value)
     {
+        // Determines if a PHP value is entirely composed of a value that would
+        // require single quoting in YAML.
+        if (in_array(strtolower($value), ["null", "~", "true", "false", "y", "n", "yes", "no", "on", "off"])) {
+            return true;
+        }
+
+        // Determines if the PHP value contains any single characters that would
+        // cause it to require single quoting in YAML.
         return preg_match("/[ \\s ' \" \\: \\{ \\} \\[ \\] , & \\* \\# \\?] | \\A[ \\- ? | < > = ! % @ ` ]/x", $value);
     }
 
@@ -155,7 +165,7 @@ class Escaper
      *
      * @return string The unescaped character
      */
-    public function unescapeCharacter($value)
+    protected function unescapeCharacter($value)
     {
         $tEncoding = ini_get("default_charset");
         $tChar = $value[1];
@@ -212,6 +222,8 @@ class Escaper
             $char = pack("N", hexdec(substr($value, 2, 8)));
 
             return mb_convert_encoding($char, $tEncoding, "UCS-4BE");
+        } else {
+            // throw new ParseException(sprintf("Found unknown escape character \"%s\".", $value));
         }
     }
 }

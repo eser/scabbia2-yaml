@@ -96,16 +96,18 @@ class InlineTest extends UnitTestFixture
             return;
         }
 
-        $required_locales = ["fr_FR.UTF-8", "fr_FR.UTF8", "fr_FR.utf-8", "fr_FR.utf8", "French_France.1252"];
-        if (setlocale(LC_ALL, $required_locales) === false) {
-            $this->markTestSkipped("Could not set any of required locales: " . implode(", ", $required_locales));
-            return;
+        try {
+            $required_locales = ["fr_FR.UTF-8", "fr_FR.UTF8", "fr_FR.utf-8", "fr_FR.utf8", "French_France.1252"];
+            if (setlocale(LC_NUMERIC, $required_locales) === false) {
+                $this->markTestSkipped("Could not set any of required locales: " . implode(", ", $required_locales));
+                return;
+            }
+
+            $this->assertEquals("1.2", Dumper::dumpInline(1.2));
+            $this->assertContains(setlocale(LC_NUMERIC, 0), $required_locales);
+        } finally {
+            setlocale(LC_NUMERIC, $locale);
         }
-
-        $this->assertEquals("1.2", Dumper::dumpInline(1.2));
-        $this->assertContains(setlocale(LC_NUMERIC, 0), $required_locales);
-
-        setlocale(LC_ALL, $locale);
     }
 
     /**
@@ -118,6 +120,20 @@ class InlineTest extends UnitTestFixture
         $value = "686e444";
 
         $this->assertSame($value, Inline::parse(Dumper::dumpInline($value)));
+    }
+
+    public function testParseScalarWithNonEscapedBlackslashShouldThrowException()
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        Inline::parse('"Foo\Var"');
+    }
+
+    public function testParseScalarWithNonEscapedBlackslashAtTheEndShouldThrowException()
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+
+        Inline::parse('"Foo\\"');
     }
 
     /**
@@ -239,6 +255,24 @@ class InlineTest extends UnitTestFixture
         Inline::parse("{ foo: * #foo }");
     }
 
+    public function testParseUnquotedScalarStartingWithReservedIndicator($indicator)
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+        Inline::parse("{ foo: @foo }");
+
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+        Inline::parse("{ foo: `foo }");
+    }
+
+    public function testParseUnquotedScalarStartingWithScalarIndicator($indicator)
+    {
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+        Inline::parse('{ foo: |foo }');
+
+        $this->expectException("Scabbia\\Yaml\\ParseException");
+        Inline::parse('{ foo: >foo }');
+    }
+
     /**
      * Set of test cases for parser
      *
@@ -269,6 +303,14 @@ class InlineTest extends UnitTestFixture
             "'#cfcfcf'" => "#cfcfcf",
             "::form_base.html.twig" => "::form_base.html.twig",
 
+            // Pre-YAML-1.2 booleans
+            ["'y'", "y"],
+            ["'n'", "n"],
+            ["'yes'", "yes"],
+            ["'no'", "no"],
+            ["'on'", "on"],
+            ["'off'", "off"],
+
             "2007-10-30" => mktime(0, 0, 0, 10, 30, 2007),
             "2007-10-30T02:59:43Z" => gmmktime(2, 59, 43, 10, 30, 2007),
             "2007-10-30 02:59:43 Z" => gmmktime(2, 59, 43, 10, 30, 2007),
@@ -280,6 +322,14 @@ class InlineTest extends UnitTestFixture
 
             "'-dash'" => "-dash",
             "'-'" => "-",
+
+            // Pre-YAML-1.2 booleans
+            ["'y'", "y"],
+            ["'n'", "n"],
+            ["'yes'", "yes"],
+            ["'no'", "no"],
+            ["'on'", "on"],
+            ["'off'", "off"],
 
             // sequences
             // urls are no key value mapping. see #3609. Valid yaml "key: value" mappings require a space after the

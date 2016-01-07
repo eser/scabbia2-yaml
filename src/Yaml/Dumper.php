@@ -104,7 +104,7 @@ class Dumper
             }
 
             if (is_float($value)) {
-                $repr = strval($value);
+                $repr = (string)$value;
 
                 if (is_infinite($value)) {
                     $repr = str_ireplace("INF", ".Inf", $repr);
@@ -115,7 +115,7 @@ class Dumper
             } elseif (is_string($value)) {
                 $repr = "'$value'";
             } else {
-                $repr = strval($value);
+                $repr = (string)$value;
             }
 
             if ($locale !== false) {
@@ -123,16 +123,14 @@ class Dumper
             }
 
             return $repr;
-        } elseif (Escaper::requiresDoubleQuoting($value)) {
-            return Escaper::escapeWithDoubleQuotes($value);
-        } elseif (Escaper::requiresSingleQuoting($value)) {
-            return Escaper::escapeWithSingleQuotes($value);
         } elseif ($value === "") {
             return "''";
-        } elseif (preg_match(Inline::getTimestampRegex(), $value) ||
-            in_array(strtolower($value), ["null", "~", "true", "false"])
-        ) {
-            return "'$value'";
+        } elseif (Escaper::requiresDoubleQuoting($value)) {
+            return Escaper::escapeWithDoubleQuotes($value);
+        } elseif (Escaper::requiresSingleQuoting($value) ||
+            preg_match(Inline::getHexRegex(), $value) ||
+            preg_match(Inline::getTimestampRegex(), $value)) {
+            return Escaper::escapeWithSingleQuotes($value);
         } else {
             return $value;
         }
@@ -149,12 +147,13 @@ class Dumper
     {
         // array
         $keys = array_keys($value);
+        $keysCount = count($keys);
         $func = function ($v, $w) {
             return (int)$v + $w;
         };
 
-        if ((count($keys) === 1 && $keys[0] === "0") ||
-            (count($keys) > 1 && array_reduce($keys, $func, 0) == count($keys) * (count($keys) - 1) / 2)
+        if (($keysCount === 1 && $keys[0] === "0") ||
+            ($keysCount > 1 && array_reduce($keys, $func, 0) == $keysCount * ($keysCount - 1) / 2)
         ) {
             $output = [];
             foreach ($value as $val) {

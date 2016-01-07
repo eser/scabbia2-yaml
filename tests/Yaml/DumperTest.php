@@ -92,7 +92,7 @@ class DumperTest extends UnitTestFixture
     {
         $this->dumper->setIndentation(7);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 '': bar
 foo: '#bar'
 'foo''bar': {  }
@@ -145,7 +145,7 @@ EOF;
 
     public function testInlineLevel()
     {
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 {
     '': bar,
     foo: '#bar',
@@ -166,7 +166,7 @@ EOF;
             "->dump() takes an inline level argument"
         );
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 '': bar
 foo: '#bar'
 'foo''bar': {  }
@@ -180,7 +180,7 @@ EOF;
             "->dump() takes an inline level argument"
         );
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 '': bar
 foo: '#bar'
 'foo''bar': {  }
@@ -195,7 +195,7 @@ foobar:
 EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 2), "->dump() takes an inline level argument");
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 '': bar
 foo: '#bar'
 'foo''bar': {  }
@@ -214,7 +214,7 @@ foobar:
 EOF;
         $this->assertEquals($expected, $this->dumper->dump($this->array, 3), "->dump() takes an inline level argument");
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 '': bar
 foo: '#bar'
 'foo''bar': {  }

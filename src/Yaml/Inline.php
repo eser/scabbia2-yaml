@@ -94,6 +94,8 @@ class Inline
      *
      * @throws ParseException When malformed inline YAML string is parsed
      * @return string A YAML string
+     *
+     * @internal
      */
     public static function parseScalar(
         $scalar,
@@ -123,14 +125,19 @@ class Inline
             $i += strlen($output);
 
             // remove comments
-            if (($strpos = strpos($output, " #")) !== false) {
-                $output = rtrim(substr($output, 0, $strpos));
+            if (preg_match("/[ \t]+#/", $output, $match, PREG_OFFSET_CAPTURE)) {
+                $output = substr($output, 0, $match[0][1]);
             }
         } elseif (preg_match("/^(.+?)(" . implode("|", $delimiters) . ")/", substr($scalar, $i), $match)) {
             $output = $match[1];
             $i += strlen($output);
         } else {
             throw new ParseException(sprintf("Malformed inline YAML string (%s).", $scalar));
+        }
+
+        // a non-quoted string cannot start with @ or ` (reserved) nor with a scalar indicator (| or >)
+        if ($output && ($output[0] === "@" || $output[0] === "`" || $output[0] === "|" || $output[0] === ">")) {
+            throw new ParseException(sprintf("The reserved indicator \"%s\" cannot start a plain scalar; you need to quote the scalar.", $output[0]));
         }
 
         if ($evaluate) {
@@ -183,7 +190,7 @@ class Inline
     {
         $output = [];
         $len = strlen($sequence);
-        $i += 1;
+        ++$i;
 
         // [foo, bar, ...]
         while ($i < $len) {
@@ -234,7 +241,7 @@ class Inline
     {
         $output = [];
         $len = strlen($mapping);
-        $i += 1;
+        ++$i;
 
         // {foo: bar, bar:foo, ...}
         while ($i < $len) {
@@ -321,29 +328,29 @@ class Inline
             if (strpos($scalar, "!str") === 0) {
                 return (string)substr($scalar, 5);
             } elseif (strpos($scalar, "! ") === 0) {
-                return intval(self::parseScalar(substr($scalar, 2)));
+                return (int)self::parseScalar(substr($scalar, 2));
             } elseif (strpos($scalar, "!!php/object:") === 0) {
                 return unserialize(substr($scalar, 13));
             } elseif (strpos($scalar, "!!float ") === 0) {
                 return (float)substr($scalar, 8);
             } elseif (ctype_digit($scalar)) {
                 $raw = $scalar;
-                $cast = intval($scalar);
+                $cast = (int)$scalar;
 
                 return $scalar[0] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
             } elseif ($scalar[0] === "-" && ctype_digit(substr($scalar, 1))) {
                 $raw = $scalar;
-                $cast = intval($scalar);
+                $cast = (int)$scalar;
 
                 return $scalar[1] == "0" ? octdec($scalar) : (((string)$raw == (string)$cast) ? $cast : $raw);
-            } elseif (is_numeric($scalar)) {
-                return $scalar[0] . $scalar[1] == "0x" ? hexdec($scalar) : floatval($scalar);
+            } elseif (is_numeric($scalar) || preg_match(self::getHexRegex(), $scalar)) {
+                return $scalar[0] . $scalar[1] == "0x" ? hexdec($scalar) : (float)$scalar;
             } elseif ($scalarLower === ".inf" || $scalarLower === ".nan") {
                 return -log(0);
             } elseif ($scalarLower === "-.inf") {
                 return log(0);
             } elseif (preg_match("/^(-|\\+)?[0-9,]+(\\.[0-9]+)?$/", $scalar)) {
-                return floatval(str_replace(",", "", $scalar));
+                return (float)str_replace(",", "", $scalar);
             } elseif (preg_match(self::getTimestampRegex(), $scalar)) {
                 return strtotime($scalar);
             }
@@ -375,5 +382,15 @@ class Inline
         (?::(?P<tz_minute>[0-9][0-9]))?))?)?
         $~x
 EOF;
+    }
+
+    /**
+     * Gets a regex that matches a YAML number in hexadecimal notation.
+     *
+     * @return string
+     */
+    public static function getHexRegex()
+    {
+        return "~^0x[0-9a-f]++$~i";
     }
 }

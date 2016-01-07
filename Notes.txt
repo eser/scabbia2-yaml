@@ -12,7 +12,8 @@ Modifications made:
 - Namespace changed.
 - Tests ported to Scabbia2.
 - Encoding checks removed.
+- Object support removed.
 
 Latest commit applied:
-https://github.com/symfony/Yaml/commit/44d09645715d04db154d8a875610bab1e486f931
-44d09645715d04db154d8a875610bab1e486f931
+https://github.com/symfony/yaml/commit/9db3e5a309bd5f3dfd974f5b42d820904352c4d8
+9db3e5a309bd5f3dfd974f5b42d820904352c4d8
