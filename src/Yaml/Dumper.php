@@ -125,6 +125,8 @@ class Dumper
             return $repr;
         } elseif ($value === "") {
             return "''";
+        } elseif (strstr($value, "\n") !== false) {
+            return "|\n  " . preg_replace("/\\n/", "\n  ", $value);
         } elseif (Escaper::requiresDoubleQuoting($value)) {
             return Escaper::escapeWithDoubleQuotes($value);
         } elseif (Escaper::requiresSingleQuoting($value) ||

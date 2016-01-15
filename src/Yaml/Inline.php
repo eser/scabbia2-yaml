@@ -100,7 +100,7 @@ class Inline
     public static function parseScalar(
         $scalar,
         $delimiters = null,
-        array $stringDelimiters = array("\"", "'"),
+        array $stringDelimiters = ["\"", "'"],
         &$i = 0,
         $evaluate = true,
         $references = []
